@@ -1,0 +1,28 @@
+class Rectangle extends Primitive
+  x: 0
+  y: 0
+  width:  10
+  height: 10
+  
+  constructObject: ->
+    $('<div>').css 
+      position: 'absolute'
+      background: '#555'
+
+  applyPosition: ->
+    @object.css 
+      top:  @y
+      left: @x
+      width:  @width
+      height: @height
+
+  move: (diffX, diffY) ->
+    @x += diffX
+    @y += diffY
+    console.log "moved to #{@x}, #{@y}"
+
+  getCollisionArea: ->
+    x1: @x
+    y1: @y
+    x2: @x + @width
+    y2: @y + @height
