@@ -6792,16 +6792,18 @@
 }.call(this));
 
 (function() {
-  var Circle, MovableRect, Primitive, Rectangle, Robot, Wall, physics, _ref, _ref1, _ref2, _ref3, _ref4,
+  var Circle, MAX_MASS, MovableRect, Primitive, Rectangle, Robot, Wall, physics, _ref, _ref1, _ref2, _ref3, _ref4,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
+
+  MAX_MASS = 9999999999999999;
 
   Primitive = (function() {
     Primitive.prototype.scene = 'body';
 
     Primitive.prototype.object = null;
 
-    Primitive.prototype.mass = Infinity;
+    Primitive.prototype.mass = MAX_MASS;
 
     function Primitive(settings) {
       _.extend(this, settings);
@@ -6896,8 +6898,7 @@
 
     Rectangle.prototype.move = function(diffX, diffY) {
       this.x += diffX;
-      this.y += diffY;
-      return console.log("moved to " + this.x + ", " + this.y);
+      return this.y += diffY;
     };
 
     Rectangle.prototype.getCollisionArea = function() {
@@ -6957,7 +6958,7 @@
 
     Robot.prototype.directionAngle = Math.PI / 2;
 
-    Robot.prototype.speed = 3;
+    Robot.prototype.speed = 3.1;
 
     Robot.prototype.tick = function() {
       return this.move(Math.sin(this.directionAngle) * this.speed, Math.cos(this.directionAngle) * this.speed);
@@ -6989,17 +6990,27 @@
       backDiff = this._areasDifference(secondObject.getCollisionArea(), firstObject.getCollisionArea());
       return (!!diff.x && !!diff.y) || (!!backDiff.x && !!backDiff.y);
     },
+    _moveCollised: function(object, diff, totalMass, isReverse) {
+      var massRatio;
+      massRatio = 1 - (object.mass / totalMass);
+      return object.move((isReverse ? -1 : 1) * diff.x * massRatio, (isReverse ? -1 : 1) * diff.y * massRatio);
+    },
     resolveCollision: function(firstObject, secondObject) {
-      var diff, massRatio;
+      var diff, totalMass;
       diff = this._areasDifference(firstObject.getCollisionArea(), secondObject.getCollisionArea());
-      massRatio = firstObject.mass / secondObject.mass;
-      firstObject.move(diff.x / massRatio, diff.y / massRatio);
-      return secondObject.move(-diff.x * massRatio, -diff.y * massRatio);
+      if (diff.x < diff.y) {
+        diff.y = 0;
+      } else {
+        diff.x = 0;
+      }
+      totalMass = firstObject.mass + secondObject.mass;
+      this._moveCollised(firstObject, diff, totalMass, true);
+      return this._moveCollised(secondObject, diff, totalMass);
     }
   };
 
   $(function() {
-    var objects;
+    var objects, renderObjects, resolveCollisions;
     objects = [
       new Wall({
         x: 0,
@@ -7022,34 +7033,45 @@
         width: 300,
         height: 30
       }), new MovableRect({
-        x: 100,
+        x: 270,
         y: 42,
         width: 27,
         height: 100
       }), new Robot({
-        x: 75,
+        x: 235,
         y: 60,
         width: 30,
         height: 30
       })
     ];
-    return setInterval(function() {
-      _.each(objects, function(object) {
-        object.tick();
+    renderObjects = function() {
+      return _.each(objects, function(object) {
         return object.render();
       });
+    };
+    resolveCollisions = function() {
+      var hasCollision,
+        _this = this;
+      hasCollision = false;
+      _.each(objects, function(firstObject) {
+        return _.each(objects, function(secondObject) {
+          if (physics.hasCollision(firstObject, secondObject)) {
+            physics.resolveCollision(firstObject, secondObject);
+            return hasCollision = true;
+          }
+        });
+      });
+      if (hasCollision) {
+        return resolveCollisions();
+      }
+    };
+    return setInterval(function() {
+      _.each(objects, function(object) {
+        return object.tick();
+      });
       return setTimeout(function() {
-        var _this = this;
-        _.each(objects, function(firstObject) {
-          return _.each(objects, function(secondObject) {
-            if (physics.hasCollision(firstObject, secondObject)) {
-              return physics.resolveCollision(firstObject, secondObject);
-            }
-          });
-        });
-        return _.each(objects, function(object) {
-          return object.render();
-        });
+        resolveCollisions();
+        return renderObjects();
       }, 100);
     }, 300);
   });

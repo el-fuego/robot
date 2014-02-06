@@ -15,9 +15,24 @@ physics =
     backDiff = @_areasDifference secondObject.getCollisionArea(), firstObject.getCollisionArea()
     (!!diff.x && !!diff.y) || (!!backDiff.x && !!backDiff.y)
 
+  _moveCollised: (object, diff, totalMass, isReverse) ->
+    massRatio = 1 - (object.mass / totalMass)
+    object.move(
+      (if isReverse then -1 else 1) * diff.x * massRatio,
+      (if isReverse then -1 else 1) * diff.y * massRatio
+    )
+
+
   resolveCollision: (firstObject, secondObject) ->
     diff = @_areasDifference firstObject.getCollisionArea(),  secondObject.getCollisionArea()
-    massRatio = firstObject.mass / secondObject.mass
-    firstObject.move  diff.x / massRatio, diff.y / massRatio
-    secondObject.move -diff.x * massRatio, -diff.y * massRatio
+
+    # hack: collapse was given by minimum diff value (ortoganal moves only)
+    if diff.x < diff.y
+      diff.y = 0
+    else
+      diff.x = 0
+      
+    totalMass = firstObject.mass + secondObject.mass
+    @_moveCollised firstObject,  diff, totalMass, true
+    @_moveCollised secondObject, diff, totalMass
   

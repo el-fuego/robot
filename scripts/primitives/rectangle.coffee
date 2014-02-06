@@ -21,7 +21,6 @@ class Rectangle extends Primitive
   move: (diffX, diffY) ->
     @x += diffX
     @y += diffY
-    console.log "moved to #{@x}, #{@y}"
 
   getCollisionArea: ->
     x1: @x

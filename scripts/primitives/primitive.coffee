@@ -1,7 +1,7 @@
 class Primitive
   scene:  'body'
   object: null
-  mass:   Infinity
+  mass:   MAX_MASS
 
   constructor: (settings) ->
     _.extend @, settings

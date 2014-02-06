@@ -32,6 +32,7 @@ module.exports = (grunt) ->
     concat:
       coffee:
         src: [
+          'scripts/settings.coffee',
           'scripts/primitives/primitive.coffee',
           'scripts/primitives/*.coffee',
           'scripts/objects/wall.coffee',

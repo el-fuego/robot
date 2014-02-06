@@ -3,6 +3,6 @@ class Robot extends MovableRect
   mass: 1
 
   directionAngle: Math.PI/2
-  speed: 3
+  speed: 3.1
   tick: ->
     @move Math.sin(@directionAngle)*@speed, Math.cos(@directionAngle)*@speed
