@@ -4,8 +4,8 @@ $ ->
     new Wall({x: 30, y: 0, width: 300, height: 30})
     new Wall({x: 300, y: 30, width: 30, height: 300})
     new Wall({x: 0, y: 300, width: 300, height: 30})
-    new MovableRect({x: 270, y: 42, width: 27, height: 100})
-    new Robot({x: 235, y: 60, width: 30, height: 30})
+    new MovableRect({x: 80, y: 42, width: 27, height: 100})
+    new Robot({x: 25, y: 60, width: 30, height: 30})
   ]
 
   renderObjects = ->
