@@ -19,5 +19,5 @@ physics =
     diff = @_areasDifference firstObject.getCollisionArea(),  secondObject.getCollisionArea()
     massRatio = firstObject.mass / secondObject.mass
     firstObject.move  diff.x / massRatio, diff.y / massRatio
-    secondObject.move diff.x * massRatio, diff.y * massRatio
+    secondObject.move -diff.x * massRatio, -diff.y * massRatio
   

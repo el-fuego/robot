@@ -6843,6 +6843,8 @@
       return _ref;
     }
 
+    Circle.prototype.className = 'circle';
+
     Circle.prototype.centerX = 0;
 
     Circle.prototype.centerY = 0;
@@ -6866,6 +6868,8 @@
       return _ref1;
     }
 
+    Rectangle.prototype.className = 'rectangle';
+
     Rectangle.prototype.x = 0;
 
     Rectangle.prototype.y = 0;
@@ -6878,7 +6882,7 @@
       return $('<div>').css({
         position: 'absolute',
         background: '#555'
-      });
+      }).addClass(this.className);
     };
 
     Rectangle.prototype.applyPosition = function() {
@@ -6917,6 +6921,8 @@
       return _ref2;
     }
 
+    Wall.prototype.className = 'wall';
+
     return Wall;
 
   })(Rectangle);
@@ -6928,6 +6934,8 @@
       _ref3 = MovableRect.__super__.constructor.apply(this, arguments);
       return _ref3;
     }
+
+    MovableRect.prototype.className = 'mowable-rect';
 
     MovableRect.prototype.mass = 3;
 
@@ -6943,10 +6951,16 @@
       return _ref4;
     }
 
-    Robot.prototype.mass = 10;
+    Robot.prototype.className = 'robot';
+
+    Robot.prototype.mass = 1;
+
+    Robot.prototype.directionAngle = Math.PI / 2;
+
+    Robot.prototype.speed = 3;
 
     Robot.prototype.tick = function() {
-      return this.move(Math.random() * 3, Math.random() * 1);
+      return this.move(Math.sin(this.directionAngle) * this.speed, Math.cos(this.directionAngle) * this.speed);
     };
 
     return Robot;
@@ -6980,7 +6994,7 @@
       diff = this._areasDifference(firstObject.getCollisionArea(), secondObject.getCollisionArea());
       massRatio = firstObject.mass / secondObject.mass;
       firstObject.move(diff.x / massRatio, diff.y / massRatio);
-      return secondObject.move(diff.x * massRatio, diff.y * massRatio);
+      return secondObject.move(-diff.x * massRatio, -diff.y * massRatio);
     }
   };
 

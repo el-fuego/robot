@@ -21,6 +21,7 @@ class Primitive
     @object = @constructObject().appendTo @scene unless @object
     @applyPosition()
 class Circle extends Primitive
+  className: 'circle'
   centerX: 0
   centerY: 0
   diameter: 10
@@ -29,6 +30,7 @@ class Circle extends Primitive
     @centerX += diffX
     @centerY += diffY
 class Rectangle extends Primitive
+  className: 'rectangle'
   x: 0
   y: 0
   width:  10
@@ -38,6 +40,7 @@ class Rectangle extends Primitive
     $('<div>').css 
       position: 'absolute'
       background: '#555'
+    .addClass @className
 
   applyPosition: ->
     @object.css 
@@ -57,13 +60,18 @@ class Rectangle extends Primitive
     x2: @x + @width
     y2: @y + @height
 class Wall extends Rectangle
-
+  className: 'wall'
 class MovableRect extends Wall
+  className: 'mowable-rect'
   mass: 3
 class Robot extends MovableRect
-  mass: 10
+  className: 'robot'
+  mass: 1
+
+  directionAngle: Math.PI/2
+  speed: 3
   tick: ->
-    @move Math.random()*3, Math.random()*1
+    @move Math.sin(@directionAngle)*@speed, Math.cos(@directionAngle)*@speed
 physics =
   _isBetween: (value, rangeStart, rangeEnd) ->
     value > rangeStart && value < rangeEnd
@@ -85,7 +93,7 @@ physics =
     diff = @_areasDifference firstObject.getCollisionArea(),  secondObject.getCollisionArea()
     massRatio = firstObject.mass / secondObject.mass
     firstObject.move  diff.x / massRatio, diff.y / massRatio
-    secondObject.move diff.x * massRatio, diff.y * massRatio
+    secondObject.move -diff.x * massRatio, -diff.y * massRatio
   
 
 $ ->

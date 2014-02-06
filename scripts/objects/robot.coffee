@@ -1,4 +1,8 @@
 class Robot extends MovableRect
-  mass: 10
+  className: 'robot'
+  mass: 1
+
+  directionAngle: Math.PI/2
+  speed: 3
   tick: ->
-    @move Math.random()*3, Math.random()*1
+    @move Math.sin(@directionAngle)*@speed, Math.cos(@directionAngle)*@speed

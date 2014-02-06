@@ -1,4 +1,5 @@
 class Rectangle extends Primitive
+  className: 'rectangle'
   x: 0
   y: 0
   width:  10
@@ -8,6 +9,7 @@ class Rectangle extends Primitive
     $('<div>').css 
       position: 'absolute'
       background: '#555'
+    .addClass @className
 
   applyPosition: ->
     @object.css 
