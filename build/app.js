@@ -7033,12 +7033,12 @@
         width: 300,
         height: 30
       }), new MovableRect({
-        x: 270,
+        x: 130,
         y: 42,
         width: 27,
         height: 100
       }), new Robot({
-        x: 235,
+        x: 45,
         y: 60,
         width: 30,
         height: 30
